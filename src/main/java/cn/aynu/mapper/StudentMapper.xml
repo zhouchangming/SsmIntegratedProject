@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.aynu.mapper.StudentMapper">
+
+	<insert id="addMessage" parameterType="cn.aynu.po.StudentMessage">
+		insert into studentmessage (one,two,three,four,five,six,seven,eight,nine,ten)values(#{one},#{two},#{three},#{four},#{five},#{six},#{seven},#{eight},#{nine},#{ten})
+	</insert>
+	
+    <select id="selectChoose"  parameterType="cn.aynu.po.DoubleChoses" resultType="Integer">
+	    select count(*)
+	    from studentmessage
+	    where ${first}=#{second}
+    </select>
+    
+	 <select id="selectAll"  resultType="Integer">
+	    select count(*)
+	    from studentmessage
+    </select>
+	
+	<delete id="deleteTable">
+		delete
+		from studentmessage
+	</delete>
+
+</mapper>
