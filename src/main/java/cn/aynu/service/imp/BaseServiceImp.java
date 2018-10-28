@@ -1,10 +1,16 @@
 package cn.aynu.service.imp;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.aynu.mapper.StudentMapper;
@@ -22,12 +28,11 @@ public class BaseServiceImp implements BaseService {
 	@Autowired
 	UserMapper userMapper;
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see cn.aynu.service.BaseService#infoProcessing() 
-	 *  信息 处理 每个选择题 的每个选项 都在相应的list 里
+	 * @see cn.aynu.service.BaseService#infoProcessing() 信息 处理 每个选择题 的每个选项 都在相应的list
+	 * 里
 	 * 
 	 */
 	@Override
@@ -35,7 +40,7 @@ public class BaseServiceImp implements BaseService {
 
 		Integer countAll = studentMapper.selectAll();
 		ResultCount resultCount = new ResultCount();
-		
+
 		DoubleChoses doubleChoses = new DoubleChoses();
 		String[] select = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten" };
 		String[] op = { "A", "B", "C", "D", "E" };
@@ -61,7 +66,7 @@ public class BaseServiceImp implements BaseService {
 				list.add(tem);
 			}
 			/*
-			 * 加入统计列  共两列  不在循环内 需要放在内循环外 在加入list前 放入队列
+			 * 加入统计列 共两列 不在循环内 需要放在内循环外 在加入list前 放入队列
 			 */
 			list.add(countPercent(learn, countAll));
 			list.add(countPercent(learned, countAll));
@@ -116,10 +121,11 @@ public class BaseServiceImp implements BaseService {
 		return resultCount;
 
 	}
+
 	/*
 	 * 求某数的百分比;
 	 */
-	private String countPercent(Integer num,Integer countAll) {
+	private String countPercent(Integer num, Integer countAll) {
 		NumberFormat numberFormat = NumberFormat.getPercentInstance();
 		numberFormat.setMaximumFractionDigits(2);
 		double d = (double) num / countAll;
@@ -155,6 +161,64 @@ public class BaseServiceImp implements BaseService {
 	public int selectAll() throws Exception {
 		// TODO Auto-generated method stub
 		return studentMapper.selectAll();
+	}
+
+	@Override
+	public void putExcel(ResultCount resultCount) throws Exception {
+		int sum = selectAll();
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet("Excel Sheet");
+		HSSFRow rowhead = sheet.createRow((short) 0);
+		rowhead.createCell((short) 0).setCellValue("总计：" + sum);
+		rowhead.createCell((short) 1).setCellValue("(A)在听课 学的还可以");
+		rowhead.createCell((short) 2).setCellValue("(B)在听课 学的一般");
+		rowhead.createCell((short) 3).setCellValue("(C)在听课，但听不很懂");
+		rowhead.createCell((short) 4).setCellValue("(D)没听课,课程本身没意思");
+		rowhead.createCell((short) 5).setCellValue("(E)没听课，感觉课程将来没用");
+		rowhead.createCell((short) 6).setCellValue("总计:在听课百分比(A,B,C)");
+		rowhead.createCell((short) 7).setCellValue("总计:没听课百分比(D,E)");
+		List lp = new ArrayList<>();
+		lp.add("问题");
+		lp.add("JavaEE的SSM框架课");
+		lp.add("Oracle数据库");
+		lp.add("计算机网络课程");
+		lp.add("软件工程导论课");
+		lp.add("企业项目实战课");
+		for (int i = 1; i < lp.size(); i++) {
+			List l1 = new ArrayList();
+			switch (i) {
+			case 1:
+				l1 = resultCount.getOne();
+				break;
+			case 2:
+				l1 = resultCount.getTwo();
+				break;
+			case 3:
+				l1 = resultCount.getThree();
+				break;
+			case 4:
+				l1 = resultCount.getFour();
+				break;
+			case 5:
+				l1 = resultCount.getFive();
+				break;
+			}
+			HSSFRow row = sheet.createRow((short) i);
+			row.createCell((short) 0).setCellValue(lp.get(i).toString());
+			row.createCell((short) 1).setCellValue(l1.get(0).toString());
+			row.createCell((short) 2).setCellValue(l1.get(1).toString());
+			row.createCell((short) 3).setCellValue(l1.get(2).toString());
+			row.createCell((short) 4).setCellValue(l1.get(3).toString());
+			row.createCell((short) 5).setCellValue(l1.get(4).toString());
+			row.createCell((short) 6).setCellValue(l1.get(5).toString());
+			row.createCell((short) 7).setCellValue(l1.get(6).toString());
+		}
+
+		FileOutputStream fileOut;
+		fileOut = new FileOutputStream("d:\\excelFile.xls");
+		wb.write(fileOut);
+		fileOut.close();
+		System.out.println("Data is saved in excel file.");
 	}
 
 }

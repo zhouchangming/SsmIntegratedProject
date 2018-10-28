@@ -80,5 +80,13 @@ public class MessageControl {
 		return "/jsp/index.jsp";
 	}
 	
+	@RequestMapping("putExcel.handler")
+	public String putExcel()throws Exception{
+		ResultCount resultCount = null;
+		resultCount = baseService.infoProcessing();
+		baseService.putExcel(resultCount);
+		return "/submitsuccess.handler";
+	}
+	
 	
 }

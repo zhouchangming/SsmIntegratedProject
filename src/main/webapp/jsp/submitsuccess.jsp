@@ -18,7 +18,10 @@ body {
 </head>
 <body>
 	<div class="content">
-		提交成功 请勿重复提交 <a href="${pageContext.request.contextPath}/jsp/index.jsp">返回主界面</a>
+		<p>操作成功</p>
+	
+		<a href="${pageContext.request.contextPath}/jsp/index.jsp">返回主界面</a>
+		
 	</div>
 </body>
 </html>

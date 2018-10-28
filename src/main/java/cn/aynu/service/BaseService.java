@@ -27,4 +27,5 @@ public interface BaseService {
 	
 	public void addMessage(StudentMessage message)throws Exception;
 	
+	public void putExcel(ResultCount resultCount)throws Exception;
 }

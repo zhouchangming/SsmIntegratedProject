@@ -67,6 +67,9 @@ body {
 		</table>
 		<a href="${pageContext.request.contextPath}/deleteAllData.handler">删除数据
 			完成调查</a>
+		<br>
+		<a href="${pageContext.request.contextPath}/putExcel.handler">导出excel</a>
+			
 	</div>
 
 
